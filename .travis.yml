@@ -1,0 +1,103 @@
+env:
+  global:
+  - WHEELHOUSE_UPLOAD=1
+  - REPO_DIR=smcp
+  - BUILD_COMMIT=v0.4.5-001
+  - BUILD_DEPENDS=""
+  - TEST_DEPENDS="chompack"
+  - PLAT=x86_64
+  - UNICODE_WIDTH=32
+language: python
+python: 3.5
+sudo: required
+dist: trusty
+services: docker
+matrix:
+  exclude:
+  - python: 3.5
+  include:
+  - os: linux
+    env: MB_PYTHON_VERSION=2.7
+  - os: linux
+    env:
+    - MB_PYTHON_VERSION=2.7
+    - UNICODE_WIDTH=16
+  - os: linux
+    env:
+    - MB_PYTHON_VERSION=2.7
+    - PLAT=i686
+  - os: linux
+    env:
+    - MB_PYTHON_VERSION=2.7
+    - PLAT=i686
+    - UNICODE_WIDTH=16
+  - os: linux
+    env:
+    - MB_PYTHON_VERSION=3.3
+  - os: linux
+    env:
+    - MB_PYTHON_VERSION=3.3
+    - PLAT=i686
+  - os: linux
+    env:
+    - MB_PYTHON_VERSION=3.4
+  - os: linux
+    env:
+    - MB_PYTHON_VERSION=3.4
+    - PLAT=i686
+  - os: linux
+    env:
+    - MB_PYTHON_VERSION=3.5
+  - os: linux
+    env:
+    - MB_PYTHON_VERSION=3.5
+    - PLAT=i686
+  - os: linux
+    env:
+    - MB_PYTHON_VERSION=3.6
+  - os: linux
+    env:
+    - MB_PYTHON_VERSION=3.6
+    - PLAT=i686
+  - os: osx
+    osx_image: xcode6.4
+    language: generic
+    env:
+    - MB_PYTHON_VERSION=2.7
+  - os: osx
+    osx_image: xcode6.4
+    language: generic
+    env:
+    - MB_PYTHON_VERSION=3.4
+  - os: osx
+    osx_image: xcode6.4
+    language: generic
+    env:
+    - MB_PYTHON_VERSION=3.5
+  - os: osx
+    osx_image: xcode6.4
+    language: generic
+    env:
+    - MB_PYTHON_VERSION=3.6
+before_install:
+- source multibuild/common_utils.sh
+- source multibuild/travis_steps.sh
+- before_install
+install:
+- clean_code $REPO_DIR $BUILD_COMMIT
+- build_wheel $REPO_DIR $PLAT
+script:
+- install_run $PLAT
+
+before_deploy: cd ${TRAVIS_BUILD_DIR}/wheelhouse
+deploy:
+  skip_cleanup: true
+  provider: cloudfiles
+  username: martinandersen
+  api_key:
+    secure: nxbz3jHI5pRkh/dehw73enjWcTe2NOcRYiRtrxN4O9RZlH6pScjObRkxUAI3vH5A1G1E2zPxQnHZxoM8D1A+4rqFgaAHwHjsklNoXYu/uJR+b0RRtSyYEEqNMa/UNPl8PhN/r/ovE9Z888fi00NRDoBCtJDiJYrWMSVHh9FFpCdFgmEOv1otnQ+R/SJDxURJESd6ueZr4m38V90UpFl9IsMcKMPeDtdOp7G5Mik5njLRUh6DfwDaiGICOi7w0vPIJsX9BOYvIk22VzmwtbLL6LkTr/PFDAws+WsIdikK71AYhscs3eJdmCDhuujkD0yTDEeIkzHIjzD0JLUTrFHhJfsEVHgFw8NA6mQRZ0Cwvrj8EaHXTpS07eRLrQ872Ftb/QcR5kOyC5aOakr1e/fQaR6kuVHOR8EgUwk+CtzNNzvewlumP0N4vez10ua+PEFr43nrs1xNi1OjbScEc6FNQAu7gmcB6wf7452zBhWRv0MVIWelx1Aa7gJdhLdW4ReRUyasnI/9FjYhPFWyoOFBp0LlvmTJdFxds3f1BI8UhQdvwWTOWGPQSSdjcxy5P7CnhZAHlOyGqBYWRHUiA9FXMdb5OvzXN67HAqSrEzV6+zgs+n/P1gll9VJNvLIYyjf8OGeeOBc5eGWoHdmWw+tAAOfMTIH/LSaJFPK+U8RzU6w=
+  region: IAD
+  container: wheelhouse
+  on:
+    repo: cvxopt/smcp-wheels
+    condition: $WHEELHOUSE_UPLOAD = 1
