@@ -2,7 +2,7 @@ env:
   global:
   - WHEELHOUSE_UPLOAD=1
   - REPO_DIR=smcp
-  - BUILD_COMMIT=v0.4.5-002
+  - BUILD_COMMIT=v0.4.6
   - BUILD_DEPENDS=""
   - TEST_DEPENDS="chompack"
   - PLAT=x86_64
